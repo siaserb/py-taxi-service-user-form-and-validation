@@ -84,17 +84,17 @@ class CarDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 @login_required
 @require_POST
-def assign_to_car(request: HttpRequest, pk: int) -> HttpResponse:
-    car = Car.objects.get(id=pk)
-    car.drivers.add(request.user)
-    return redirect("taxi:car-detail", pk=pk)
-
-
-@login_required
-@require_POST
-def remove_from_car(request: HttpRequest, pk: int) -> HttpResponse:
-    car = Car.objects.get(id=pk)
-    car.drivers.remove(request.user)
+def update_car_driver(
+        request: HttpRequest,
+        pk: int,
+        action: str
+) -> HttpResponse:
+    car = Car.objects.get(pk=pk)
+    user = request.user
+    if action == "assign":
+        car.drivers.add(user)
+    elif action == "remove":
+        car.drivers.remove(user)
     return redirect("taxi:car-detail", pk=pk)
 
 
